@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AC - Artificial Clone</title>
+  <link rel="stylesheet" href="ai.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+</head>
+<body>
+  <header>
+    <h1>Chat with AC</h1>
+    <nav>
+      <a href="website.html">⬅ Back to Website</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="chat-container">
+      <div id="chat-box"></div>
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Say something to AC..." />
+        <button id="send-btn">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Powered by TensorFlow.js | © 2025 Clarke Pudpud</p>
+  </footer>
+
+  <!-- Load Universal Sentence Encoder once -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
+  <script src="ai.js"></script>
+</body>
+</html>
