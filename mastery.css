@@ -1,0 +1,184 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #111;
+  color: #fff;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  text-align: center;
+  padding: 15px 0;
+  background: #111;
+  color: #aaa;
+}
+
+/* Header */
+header {
+  background: #222;
+  color: #fff;
+  padding: 20px 0;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #00adb5;
+}
+
+.text-info h1 {
+  margin: 0;
+  font-size: 1.8em;
+  color: #fff;
+}
+
+.text-info p {
+  margin: 5px 0 0;
+  color: #aaa;
+  font-size: 1em;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #00adb5;
+}
+
+/* Mastery Section */
+.mastery-section {
+  padding: 40px 20px;
+}
+
+.mastery-section h2 {
+  text-align: center;
+  font-size: 2em;
+  color: #00adb5;
+  margin-bottom: 30px;
+}
+
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.skill {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.skill-name {
+  min-width: 100px;
+  font-weight: bold;
+  color: #00adb5;
+}
+
+.skill-bar {
+  flex: 1;
+  background: #333;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skill-bar .progress {
+  background: #00adb5;
+  height: 100%;
+  width: 0;
+  border-radius: 10px 0 0 10px;
+  transition: width 1s ease;
+}
+
+.percent {
+  min-width: 35px;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .profile-pic {
+    width: 70px;
+    height: 70px;
+  }
+
+  .text-info h1 {
+    font-size: 1.5em;
+  }
+
+  .text-info p {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 600px) {
+  .skills-container {
+    gap: 20px;
+  }
+
+  .skill-name {
+    min-width: 80px;
+    font-size: 0.9em;
+  }
+
+  .skill-bar {
+    height: 15px;
+  }
+
+  .percent {
+    min-width: 30px;
+    font-size: 0.9em;
+  }
+}
