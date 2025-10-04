@@ -15,8 +15,6 @@ const knowledgeBase = [
   { q: "hi", a: "Hello! How can I help you today?" },
   { q: "how are you", a: "I'm doing great! Thanks for asking 😊" },
   { q: "who are you", a: "I’m AC - Artificial Clone, Clarke’s AI chatbot." },
-  { q: "who made you", a: "I was created by Clarke Pudpud ✨" },
-  { q: "who created you", a: "Clarke Pudpud is my creator and developer! 💻" },
   { q: "what is your purpose", a: "I’m here to help answer your questions and act like Clarke’s digital twin 🤖" },
   { q: "what can you do", a: "I can answer questions about Clarke and help simulate a chatbot experience!" },
   { q: "projects", a: "Clarke is working on his personal website and AI chatbot 🚀" },
@@ -33,6 +31,87 @@ const knowledgeBase = [
   { q: "do you speak bisaya", a: "Oo, kabalo pud ko gamay'g Bisaya 😉" },
   { q: "ilang taon kana", a: "Wala akong edad kasi AI lang ako 😅" }
 ];
+
+// short-term memory
+async function getAIResponse(message) {
+  if (!isReady) {
+    return "Please wait, loading AI model...";
+  }
+
+  conversationHistory.push({ role: "user", content: message });
+
+  let contextMessage = preprocess(message);
+
+  // Detect short confirmations
+  const confirmations = ["sige", "oo", "opo", "yes", "yup", "yeah", "tama"];
+  if (confirmations.includes(contextMessage)) {
+    let lastUserMessage = null;
+    for (let i = conversationHistory.length - 2; i >= 0; i--) {
+      if (conversationHistory[i].role === "user") {
+        lastUserMessage = conversationHistory[i].content;
+        break;
+      }
+    }
+    if (lastUserMessage) {
+      contextMessage = preprocess(lastUserMessage + " " + message);
+    }
+  }
+
+  // 🔹 Memory Recall Feature (Fixed)
+if (contextMessage.includes("last message") || contextMessage.includes("previous answer")) {
+  
+  let lastReply = [...conversationHistory]
+    .slice(0, -1) 
+    .reverse()
+    .find(m => m.role === "ac");
+  if (lastReply) {
+    return `You previously asked me something and I answered: "${lastReply.content}"`;
+  } else {
+    return "I don’t remember yet, no previous answer stored.";
+  }
+}
+
+if (contextMessage.includes("last question") || contextMessage.includes("previous question")) {
+  
+  let lastQuestion = [...conversationHistory]
+    .slice(0, -1) 
+    .reverse()
+    .find(m => m.role === "user");
+  if (lastQuestion) {
+    return `Your last question was: "${lastQuestion.content}"`;
+  } else {
+    return "I don’t see any previous question from you.";
+  }
+}
+
+  // Memory buffer (last 3 exchanges)
+  let memoryBuffer = conversationHistory.slice(-3).map(m => m.content).join(" ");
+  contextMessage = preprocess(memoryBuffer + " " + contextMessage);
+
+  const messageEmbedding = await model.embed([contextMessage]);
+  const messageVector = messageEmbedding.arraySync()[0];
+
+  let bestScore = 0;
+  let bestAnswer = null;
+
+  for (let i = 0; i < kbVectors.length; i++) {
+    const score = cosineSimilarity(messageVector, kbVectors[i]);
+    if (score > bestScore) {
+      bestScore = score;
+      bestAnswer = knowledgeBase[i].a;
+    }
+  }
+
+  if (bestScore >= 0.3) {
+    conversationHistory.push({ role: "ac", content: bestAnswer });
+    return bestAnswer;
+  } else {
+    
+    const reply = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+    conversationHistory.push({ role: "ac", content: reply });
+    return reply;
+  }
+}
 
 const fallbackResponses = [
   "Hmm 🤔 interesting question. Let me think...",
@@ -85,38 +164,6 @@ async function prepareKB() {
   if (!model) await loadModel();
   await encodeKnowledgeBase();
   isReady = true;
-}
-
-async function getAIResponse(message) {
-  if (!isReady) {
-    return "Please wait, loading AI model...";
-  }
-
-  conversationHistory.push({ role: "user", content: message });
-
-  const messageClean = preprocess(message);
-  const messageEmbedding = await model.embed([messageClean]);
-  const messageVector = messageEmbedding.arraySync()[0];
-
-  let bestScore = 0;
-  let bestAnswer = null;
-
-  for (let i = 0; i < kbVectors.length; i++) {
-    const score = cosineSimilarity(messageVector, kbVectors[i]);
-    if (score > bestScore) {
-      bestScore = score;
-      bestAnswer = knowledgeBase[i].a;
-    }
-  }
-
-  if (bestScore >= 0.3) {
-    conversationHistory.push({ role: "ac", content: bestAnswer });
-    return bestAnswer;
-  } else {
-    const reply = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-    conversationHistory.push({ role: "ac", content: reply });
-    return reply;
-  }
 }
 
 sendBtn.addEventListener("click", async () => {
